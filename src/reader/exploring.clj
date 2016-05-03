@@ -40,3 +40,17 @@
           :when (and (non-svn? file) (clojure-source? file))]
       (file-loc file))))
 
+; functional - lazy seq fibo
+(defn lazy-seq-fibo
+  "lazy seq fibo. For example (take 10 (lazy-seq-fibo))"
+  ([] (concat [0 1] (lazy-seq-fibo 0N 1N)))
+  ([a b] 
+    (let [n (+ a b)]
+      (lazy-seq (cons n (lazy-seq-fibo b n))))))
+
+(defn fibo
+  "lazy seq fibo. Final solution.
+   Using the definition of iterate."
+  []
+  (map first (iterate (fn [[a b]] [b (+ a b)]) [0N 1N])))
+
