@@ -11,10 +11,10 @@
   [file]
   (not (.contains (.getName file) ".svn")))
 
-(defn clojure-source?
-  "Is this a clojure source file?"
-  [file]
-  (.endsWith (.getName file) ".clj"))
+(defn source-file?
+  "Is this a source file of ext"
+  [file ext]
+  (.endsWith (.getName file) ext))
 
 (defn file-loc
   "Calculate Line Of Code of file"
@@ -24,9 +24,9 @@
 
 (defn loc
   "Calculate Line Of Code of all .clj in dir"
-  [dir]
+  [dir ext]
   (let [file-list (filter 
-                    #(and (non-svn? %) (clojure-source? %))
+                    #(and (non-svn? %) (source-file? % ext))
                     (file-seq (File. dir)))
         loc-list (map file-loc file-list)]
     (reduce + loc-list)))
@@ -37,7 +37,7 @@
   (reduce
     +
     (for [file (file-seq (File. dir))
-          :when (and (non-svn? file) (clojure-source? file))]
+          :when (and (non-svn? file) (source-file? file ".clj"))]
       (file-loc file))))
 
 ; functional - lazy seq fibo
@@ -53,4 +53,23 @@
    Using the definition of iterate."
   []
   (map first (iterate (fn [[a b]] [b (+ a b)]) [0N 1N])))
+
+(defn sum
+  "sum up all args. Example: (apply sum [1 2 3 4]) or (sum 1 2 3 4)"
+  ([] 0N)
+  ([a] (if (nil? a) 0N a))
+  ([a & b]
+    (letfn [(add [a more] (if more (recur (+ a (first more)) (next more)) a))]
+      (add a b)))
+  )
+
+(defn sum-inner
+  "sum up all args. Example: (apply sum [1 2 3 4]) or (sum 1 2 3 4)"
+  ([] 0N)
+  ([a] (if (nil? a) 0N a))
+  ([a & b]
+    ((fn [a more] (if more (recur (+ a (first more)) (next more)) a))
+      a b))
+  )
+
 
