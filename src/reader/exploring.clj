@@ -72,4 +72,8 @@
       a b))
   )
 
+(defn sum-builtin
+  "sum up all args. Example: (apply sum [1 2 3 4]) or (sum 1 2 3 4).
+   Implement by built-in function reduce"
+  [& a] (reduce + a))
 
