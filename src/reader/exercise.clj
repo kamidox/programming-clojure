@@ -152,3 +152,21 @@
 (transduce xf + 10 (range 5))   ; => 16
 (transduce xf str (range 5))    ; => "24"
 
+; macro
+; use defmacro to define a macro named unless
+(defmacro unless [condition & forms]
+  `(if (not ~condition) ~@forms))
+
+; macroexpand-1 will expand the form for one time
+(macroexpand-1 '(unless (= 1 2) "one not equal two" "one equal two? how come?"))
+
+(unless (= 1 2) "one not equal two" "one equal two? how come?")
+
+; define a macro named `bench` which will store the result and time it took to evaluates the result
+(defmacro bench [expr]
+  `(let [start# (System/nanoTime)
+         result# ~expr]
+     {:result result# :elapsed (- (System/nanoTime) start#)}))
+
+; (macroexpand-1 '(bench (str "a" "b")))
+(bench (str "a" "b"))
